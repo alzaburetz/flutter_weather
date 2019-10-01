@@ -3,6 +3,9 @@ import 'package:test_flutter/main.dart';
 import 'package:test_flutter/models/weathermodel.dart';
 import 'package:test_flutter/bloc/getWeatherData.dart';
 import 'package:test_flutter/views/Search.dart';
+import 'package:weather_icons/weather_icons.dart';
+
+import 'package:test_flutter/components/WeatherCardBig.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -21,21 +24,15 @@ class _MyHomePageState extends State<MyHomePage> {
   String _city = 'City';
 
   void GetWeatherData() async {
-    this.data = await GetWeather(latitude: 1.0, longitude: 102.0).GetData();
+    this.data = await GetWeather(latitude: 50.0, longitude: 102.0).GetData();
     setState(() {
       _city = this.data.timezone;
       _temperature = this.data.currently.temperature;
-      if (this.data.currently.summary == "Clear")
-      {
-        _icon = Icons.wb_sunny;
-      }
-      else if (this.data.currently.summary == "Overcast")
-      {
-        _icon = Icons.cloud;
-      }
+      print(this.data.currently.summary);
 
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,57 +53,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(builder: (context) => Search())
               );
             },
+          ),
+          FlatButton(
+            child: Icon(
+              Icons.arrow_downward
+            ),
+            onPressed: GetWeatherData,
           )
         ],
       ),
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-
-
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(40),
-              child: Row(
-
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Icon(_icon, size: 150),
-                      Text('$_city')
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        '$_temperature',
-                        style: TextStyle(
-                          fontSize: 42,
-
-                        ),
-                      ),
-                      Text(
-                        'F°',
-                        style: TextStyle(
-                          fontSize: 100,
-                          color: Colors.indigo,
-                          shadows: <Shadow> [
-                            new Shadow(
-                                blurRadius: 3,
-                                offset: Offset(0.2, 0.3)
-                            )
-                          ]
-                        )
-                      )
-                    ],
-                  )
-
-                ],
-              )
-            )
-          ],
-        ),// This trailing comma makes auto-formatting nicer for build methods.
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              WeatherCard(data: this.data.currently,title: this.data.timezone)
+            ],
+          )
+        ],
+      )
     );
   }
 }
